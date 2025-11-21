@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import jwt from "jsonwebtoken";
 import { userModel } from "../models/userModel";
 import { compare, encrypt } from "../middleware/authMiddleware";
-import { AuthRequest } from "../types/customReq";
+import { AuthRequest } from '../types/customReq';
 import { postModel } from "../models/postModel";
 import mongoose from "mongoose";
 
@@ -204,6 +204,56 @@ export const giveLike =  async (req : AuthRequest, res : Response)=>{
       message : "Post Liked" , 
       likes : post.likes ,
       length : post.likes.length
+    })
+
+  }catch(err){
+    return res.status(500).json({
+      message : err
+    })
+  }
+}
+
+export const editPost = async (req : Request,  res : Response)=>{
+  try{
+    const post = await postModel.findOne({_id : req.params.id }).populate("user");
+
+    if(!post){
+      return res.status(401).json({
+        message : "Not Found"
+      })
+    }
+
+    res.send("Edit Page");
+
+  }catch(err){
+    return res.status(500).json({
+      message : err
+    })
+  }
+}
+
+export const updatePost = async (req: Request , res : Response) =>{
+  try{
+
+    const {content} = req.body;
+
+    if(!content){
+      return res.status(300).json({
+        message : "Not new data to change"
+      })
+    }
+
+    const post = await postModel.findOneAndUpdate({_id : req.params.id}, {content : content} , {new : true}).populate("user");
+
+    if(!post){
+      return res.status(500).json({
+        message : "Something went wrong"
+      })
+    }
+
+    return res.status(200).json({
+      message : "Post updated" , 
+      post : post
     })
 
   }catch(err){
