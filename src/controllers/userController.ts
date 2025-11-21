@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import { userModel } from "../models/userModel";
 import { compare, encrypt } from "../middleware/authMiddleware";
 import { AuthRequest } from "../types/customReq";
-import { responseEncoding } from "axios";
 import { postModel } from "../models/postModel";
+import mongoose from "mongoose";
 
 export const homePage = (req: Request, res: Response) => {
   try {
@@ -172,6 +172,38 @@ export const makePost = async (req : AuthRequest , res :Response)=>{
     return res.status(200).json({
       message : "New post created"  , 
       content 
+    })
+
+  }catch(err){
+    return res.status(500).json({
+      message : err
+    })
+  }
+}
+
+export const giveLike =  async (req : AuthRequest, res : Response)=>{
+  try{
+    const post = await postModel.findOne({_id : req.params.id}).populate("user");
+
+    
+    if(!post){
+      return res.status(401).json({
+        message : "Not Found"
+      })
+    }
+    
+    if(post.likes.indexOf(req.user?.userId) === -1){
+      post.likes.push(req.user?.userId);
+    }else{
+      post.likes.splice(post.likes.indexOf(req.user?.id) , 1);
+    }
+
+    await post.save();
+
+    return res.status(200).json({
+      message : "Post Liked" , 
+      likes : post.likes ,
+      length : post.likes.length
     })
 
   }catch(err){

@@ -1,8 +1,9 @@
 import { Request } from "express";
 import { JwtPayload } from "jsonwebtoken";
 
+
 export interface userPlayload extends JwtPayload{
-  userId : string , 
+  userId : any ,
   email : string , 
 }
 

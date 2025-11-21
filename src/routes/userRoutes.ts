@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { homePage, loginPage, loginUser, logoutUser, makePost, profileLogged, registerUsers } from "../controllers/userController";
+import { giveLike, homePage, loginPage, loginUser, logoutUser, makePost, profileLogged, registerUsers } from "../controllers/userController";
 import { isLogIn } from "../middleware/isLoginMiddleware";
 
 export const userRouter = Router();
@@ -11,3 +11,4 @@ userRouter.post("/login" , loginUser);
 userRouter.get("/logout" , logoutUser);
 userRouter.get("/profile", isLogIn, profileLogged);
 userRouter.post("/post" , isLogIn , makePost);
+userRouter.get("/like/:id" , isLogIn , giveLike);
