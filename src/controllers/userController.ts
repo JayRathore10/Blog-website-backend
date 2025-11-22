@@ -34,11 +34,11 @@ export const profileLogged = async (req : AuthRequest , res : Response)=>{
 
     const posts = await postModel.findOne({user: user._id})
 
-    if(!posts){
-      return res.status(401).json({
-        message : "Not Found"
-      })
-    }
+    // if(!posts){
+    //   return res.status(401).json({
+    //     message : "Not Found"
+    //   })
+    // }
 
     return res.status(200).json({
       message : "Profile" ,
