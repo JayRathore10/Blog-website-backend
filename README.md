@@ -4,7 +4,7 @@ Backend API for a full-stack blog website.
 This repository contains the server-side logic, routes, authentication, and database operations required for the blog platform.
 
 **🔗 GitHub Repository:** https://github.com/JayRathore10/Blog-website-backend  
-**🌍 Live Backend URL:** https://blog-website-backend-pearl.vercel.app
+**🌍 Live Backend URL:** https://blog-website-backend-1-8f79.onrender.com/
 
 ---
 
