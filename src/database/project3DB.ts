@@ -2,7 +2,10 @@ import mongoose from "mongoose";
 
 export const connectDB = ()=>{
   try{
-    mongoose.connect(`mongodb+srv://JayRathore10:Jay9575Rathore@blogdb.kkimp1o.mongodb.net/blogDB`);
+    if(!process.env.MONGO_URI){
+      return console.log("Not Found");
+    }
+    mongoose.connect(process.env.MONGO_URI);
     console.log("Database connected");
   }catch(err){
     console.log(err);
