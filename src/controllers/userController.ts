@@ -19,20 +19,20 @@ export const homePage = (req: Request, res: Response) => {
   }
 }
 
-export const profileLogged = async (req : AuthRequest , res : Response)=>{
-  try{
+export const profileLogged = async (req: AuthRequest, res: Response) => {
+  try {
 
-    const user = await userModel.findOne({email : req.user?.email});
+    const user = await userModel.findOne({ email: req.user?.email });
 
-    if(!user){
+    if (!user) {
       return res.status(401).json({
-        messgae : "User not found"
+        messgae: "User not found"
       })
     }
 
     await user.populate("posts");
 
-    const posts = await postModel.findOne({user: user._id})
+    const posts = await postModel.findOne({ user: user._id })
 
     // if(!posts){
     //   return res.status(401).json({
@@ -41,132 +41,158 @@ export const profileLogged = async (req : AuthRequest , res : Response)=>{
     // }
 
     return res.status(200).json({
-      message : "Profile" ,
-      user ,
-      posts : user.posts
+      message: "Profile",
+      user,
+      posts: user.posts
     })
-  }catch(err){
+  } catch (err) {
     return res.status(500).json({
-      message : err
+      message: err
     })
   }
 }
 
-export const loginPage = (req : Request , res : Response)=>{
+export const loginPage = (req: Request, res: Response) => {
   return res.send("hello");
 }
 
-export const makePost = async (req : AuthRequest , res :Response)=>{
-  try{
-    const user = await userModel.findOne({email : req.user?.email});
+export const makePost = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await userModel.findOne({ email: req.user?.email });
 
-    const {content} = req.body;
+    const { content } = req.body;
 
     // not needed checked through isLoginMiddleware
-    if(!user && !content){
+    if (!user && !content) {
       return res.status(401).json({
-        message : "Something went wrong"
+        message: "Something went wrong"
       })
     }
 
     const post = await postModel.create({
-      user : user?._id, 
-      content : content
+      user: user?._id,
+      content: content
     });
-    
+
     user?.posts.push(post._id);
     await user?.save();
 
     return res.status(200).json({
-      message : "New post created"  , 
-      content 
+      message: "New post created",
+      content
     })
 
-  }catch(err){
+  } catch (err) {
     return res.status(500).json({
-      message : err
+      message: err
     })
   }
 }
 
-export const giveLike =  async (req : AuthRequest, res : Response)=>{
-  try{
-    const post = await postModel.findOne({_id : req.params.id}).populate("user");
+export const giveLike = async (req: AuthRequest, res: Response) => {
+  try {
+    const post = await postModel.findOne({ _id: req.params.id }).populate("user");
 
-    
-    if(!post){
+
+    if (!post) {
       return res.status(401).json({
-        message : "Not Found"
+        message: "Not Found"
       })
     }
-    
-    if(post.likes.indexOf(req.user?.userId) === -1){
+
+    if (post.likes.indexOf(req.user?.userId) === -1) {
       post.likes.push(req.user?.userId);
-    }else{
-      post.likes.splice(post.likes.indexOf(req.user?.id) , 1);
+    } else {
+      post.likes.splice(post.likes.indexOf(req.user?.id), 1);
     }
 
     await post.save();
 
     return res.status(200).json({
-      message : "Post Liked" , 
-      likes : post.likes ,
-      length : post.likes.length
+      message: "Post Liked",
+      likes: post.likes,
+      length: post.likes.length
     })
 
-  }catch(err){
+  } catch (err) {
     return res.status(500).json({
-      message : err
+      message: err
     })
   }
 }
 
-export const editPost = async (req : Request,  res : Response)=>{
-  try{
-    const post = await postModel.findOne({_id : req.params.id }).populate("user");
+export const editPost = async (req: Request, res: Response) => {
+  try {
+    const post = await postModel.findOne({ _id: req.params.id }).populate("user");
 
-    if(!post){
+    if (!post) {
       return res.status(401).json({
-        message : "Not Found"
+        message: "Not Found"
       })
     }
 
     res.send("Edit Page");
 
-  }catch(err){
+  } catch (err) {
     return res.status(500).json({
-      message : err
+      message: err
     })
   }
 }
 
-export const updatePost = async (req: Request , res : Response) =>{
-  try{
+export const updatePost = async (req: Request, res: Response) => {
+  try {
 
-    const {content} = req.body;
+    const { content } = req.body;
 
-    if(!content){
+    if (!content) {
       return res.status(300).json({
-        message : "Not new data to change"
+        message: "Not new data to change"
       })
     }
 
-    const post = await postModel.findOneAndUpdate({_id : req.params.id}, {content : content} , {new : true}).populate("user");
+    const post = await postModel.findOneAndUpdate({ _id: req.params.id }, { content: content }, { new: true }).populate("user");
 
-    if(!post){
+    if (!post) {
       return res.status(500).json({
-        message : "Something went wrong"
+        message: "Something went wrong"
       })
     }
 
     return res.status(200).json({
-      message : "Post updated" , 
-      post : post
+      message: "Post updated",
+      post: post
     })
 
-  }catch(err){
+  } catch (err) {
     return res.status(500).json({
-      message : err
+      message: err
+    })
+  }
+}
+
+export const uploadProfilePic = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await userModel.findOne({ email: req.user?.email });
+    if (!user) {
+      return res.status(400).json({
+        message: "Something went wrong"
+      })
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    user.profilePic = req.file?.filename;
+    await user.save();
+    return res.status(200).json({
+      messsage : "Profile Pic upload successfully", 
+      profilePic : user.profilePic
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err
     })
   }
 }

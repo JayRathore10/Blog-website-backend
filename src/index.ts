@@ -1,11 +1,12 @@
 import express from "express";
-import { connectDB } from "./database/project3DB";
+import { connectDB } from "./config/database.config";
 import { userRouter } from "./routes/userRoutes";
 import cookieParser from "cookie-parser";
 import { authRouter } from "./routes/authRoutes";
+import { Request ,Response } from "express";
 
 const app = express();
-const PORT =  process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 // connect database 
 connectDB();

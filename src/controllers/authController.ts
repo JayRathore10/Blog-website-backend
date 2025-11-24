@@ -31,7 +31,7 @@ export const registerUsers = async (req: Request, res: Response) => {
       password: hashedPassword
     });
 
-    const secret : string | undefined=  process.env.JWT_SECRET;
+    const secret : string | undefined=  process.env.JWT_SECRET || "secure";
 
     const token = jwt.sign({ email, userId: newUser._id }, secret!);
 
@@ -68,7 +68,7 @@ export const loginUser = async (req :Request, res : Response)=>{
       })
     }
 
-    const secret : string | undefined=  process.env.JWT_SECRET;
+    const secret : string | undefined=  process.env.JWT_SECRET || "secure";
 
     const token = jwt.sign({email , userId : user._id} , secret!);
     res.cookie("token" , token);

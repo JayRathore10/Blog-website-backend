@@ -38,7 +38,8 @@ const registerUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             age,
             password: hashedPassword
         });
-        const token = jsonwebtoken_1.default.sign({ email, userId: newUser._id }, "secure");
+        const secret = process.env.JWT_SECRET;
+        const token = jsonwebtoken_1.default.sign({ email, userId: newUser._id }, secret);
         res.cookie("token", token);
         return res.status(200).json({
             message: "User Successfully registered",
@@ -67,7 +68,8 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: "Something went wrong"
             });
         }
-        const token = jsonwebtoken_1.default.sign({ email, userId: user._id }, "secure");
+        const secret = process.env.JWT_SECRET;
+        const token = jsonwebtoken_1.default.sign({ email, userId: user._id }, secret);
         res.cookie("token", token);
         return res.status(200).json({
             message: "Successfully Login"
