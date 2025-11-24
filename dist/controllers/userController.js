@@ -36,11 +36,11 @@ const profileLogged = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         yield user.populate("posts");
         const posts = yield postModel_1.postModel.findOne({ user: user._id });
-        if (!posts) {
-            return res.status(401).json({
-                message: "Not Found"
-            });
-        }
+        // if(!posts){
+        //   return res.status(401).json({
+        //     message : "Not Found"
+        //   })
+        // }
         return res.status(200).json({
             message: "Profile",
             user,
@@ -159,4 +159,27 @@ const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.updatePost = updatePost;
+// export const uploadProfilePic = async (req: AuthRequest, res: Response) => {
+//   try {
+//     const user = await userModel.findOne({ email: req.user?.email });
+//     if (!user) {
+//       return res.status(400).json({
+//         message: "Something went wrong"
+//       })
+//     }
+//     if (!req.file) {
+//       return res.status(400).json({ message: "No file uploaded" });
+//     }
+//     user.profilePic = req.file?.filename;
+//     await user.save();
+//     return res.status(200).json({
+//       messsage : "Profile Pic upload successfully", 
+//       profilePic : user.profilePic
+//     });
+//   } catch (err) {
+//     return res.status(500).json({
+//       message: err
+//     })
+//   }
+// }
 //# sourceMappingURL=userController.js.map
